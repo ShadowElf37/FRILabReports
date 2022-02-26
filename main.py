@@ -5,11 +5,15 @@ import numpy.linalg as la
 
 
 def sigfigs(x, n):
+    # a function that gives n sig figs of x
+    # pretty broken, do not use
     if n is None:
         return str(x)
     return '{:.{p}g}'.format(float('{:.{p}g}'.format(x, p=n)), p=n)
 
 class DataSet:
+    # a nice class that holds data and its uncertainties and makes it easy to do operations on it and get latex of its values
+
     def __init__(self, data, uncertainty=None, name='Data', n_sigfigs=None, dn_sigfigs=None):
         self.data = data
         self.count = len(data)
@@ -36,6 +40,8 @@ class DataSet:
 
 table_counter = 0
 def makeTable(title, *datasets):
+    # makes a latex table from some datasets! super epic function right here
+
     global table_counter
     table_counter += 1
     ncols = len(datasets)
@@ -73,6 +79,7 @@ def makeTable(title, *datasets):
 
 
 def plot_line(m, b, x_lower_bound, x_upper_bound, *args, **kwargs):
+    # plots a line quickly
     plot.plot(np.linspace(x_lower_bound, x_upper_bound, 5), np.linspace(x_lower_bound, x_upper_bound, 5)*m+b, *args, **kwargs)
 
 def plot_line_with_error_band(m, b, dm, db, x_lower_bound, x_upper_bound, *args, **kwargs):
@@ -81,6 +88,9 @@ def plot_line_with_error_band(m, b, dm, db, x_lower_bound, x_upper_bound, *args,
                       np.linspace(x_lower_bound, x_upper_bound, 5) * (m + dm) + b + db, alpha=0.2, color='red')
 
 def analytic_regression(xdata, ydata, xerr, yerr: list):
+    # does linear regression and also spits out a shit ton of latex to "show your work" even though you did no work
+    # needs some work to get reasonable numbers in the latex, right now it just gives whatever floats are calculated
+
     invsqs = list(map(lambda x: x ** -2, yerr))
     x2invsqs = list(map(lambda x, dy: x ** 2 * dy, xdata, invsqs))
     xinvsqs = list(map(lambda x, dy: x * dy, xdata, invsqs))
@@ -146,6 +156,8 @@ def analytic_regression(xdata, ydata, xerr, yerr: list):
 
 
 def standard_graph(title, xlabel, ylabel, xdata, ydata, xerr, yerr):
+    # makes a nice graph, quickly
+
     plot.title(title)
     plot.xlabel(xlabel)
     plot.ylabel(ylabel)
@@ -155,9 +167,15 @@ def standard_graph(title, xlabel, ylabel, xdata, ydata, xerr, yerr):
 
 
 def regression_graph(xdata, ydata, xerr, yerr):
+    # adds a linear regression to your nice graph, quickly
+    # also spits out the regression latex
+
     m, b, dm, db = analytic_regression(xdata, ydata, xerr, yerr)
     plot_line_with_error_band(m, b, dm, db, xdata[0], xdata[-1], color='green', linestyle='--')
     return m, b, dm, db
+
+
+# LAB 3 SPECIFIC DATA AND CODE
 
 dV = 0.005
 dA = 0.005
